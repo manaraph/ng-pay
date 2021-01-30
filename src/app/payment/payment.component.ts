@@ -98,6 +98,7 @@ export class PaymentComponent {
   }
 
   makePayment() {
+    this.loading = true;
     const expiryDate = new Date(
       this.paymentForm.get('expirationYear').value,
       this.paymentForm.get('expirationMonth').value,
@@ -113,14 +114,18 @@ export class PaymentComponent {
       amount: +this.paymentForm.get('amount').value,
     };
 
-    this.paymentService.makePayment(paymentFormData).subscribe(
-      (response) => {
-        console.log(response);
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
+    setTimeout(() => {
+      this.paymentService.makePayment(paymentFormData).subscribe(
+        (response) => {
+          console.log(response);
+          this.loading = false;
+        },
+        (err) => {
+          console.log(err);
+          this.loading = false;
+        }
+      );
+    }, 2000);
   }
 
   ngOnDestroy() {
