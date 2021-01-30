@@ -1,1 +1,248 @@
-<p>payment works!</p>
+<div class="wrapper">
+  <div class="container w-75 mx-auto">
+    <h2>Transaction</h2>
+    <div class="w-75 mx-auto">
+      <form (ngSubmit)="makePayment()" [formGroup]="paymentForm">
+        <div class="col-md-12">
+          <div class="form-group mt-5">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="icon-user"></i></span>
+              </div>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="cardHolder"
+                placeholder="Card Holder"
+                required
+                aria-describedby="Card Holder"
+                [ngClass]="{
+                  'is-invalid':
+                    paymentForm.get('cardHolder').touched &&
+                    paymentForm.get('cardHolder').dirty &&
+                    !paymentForm.get('cardHolder').valid
+                }"
+                cardHolder
+              />
+            </div>
+            <div
+              class="text-center"
+              *ngIf="
+                paymentForm.get('cardHolder').invalid &&
+                paymentForm.get('cardHolder').touched
+              "
+            >
+              <small class="text-danger pb-2"
+                >Input the card holder correctly</small
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 mt-4">
+          <div class="form-group">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="icon-user"></i></span>
+              </div>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="creditCardNumber"
+                placeholder="Credit Card Number"
+                required
+                aria-describedby="Credit Card Number"
+                [ngClass]="{
+                  'is-invalid':
+                    paymentForm.get('creditCardNumber').touched &&
+                    paymentForm.get('creditCardNumber').dirty &&
+                    !paymentForm.get('creditCardNumber').valid
+                }"
+                creditCardNumber
+              />
+            </div>
+            <div
+              class="text-center"
+              *ngIf="
+                paymentForm.get('creditCardNumber').invalid &&
+                paymentForm.get('creditCardNumber').touched
+              "
+            >
+              <small class="text-danger pb-2"
+                >Input the credit card number correctly</small
+              >
+            </div>
+          </div>
+        </div>
+        <div class="d-flex col-md-12 mt-4">
+          <div class="col-md-6 col-sm-12">
+            <div class="form-group">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"
+                    ><i class="icon-user"></i
+                  ></span>
+                </div>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="amount"
+                  placeholder="Amount"
+                  required
+                  aria-describedby="Amount"
+                  [ngClass]="{
+                    'is-invalid':
+                      paymentForm.get('amount').touched &&
+                      paymentForm.get('amount').dirty &&
+                      !paymentForm.get('amount').valid
+                  }"
+                  amount
+                />
+              </div>
+              <div
+                class="text-center"
+                *ngIf="
+                  paymentForm.get('amount').invalid &&
+                  paymentForm.get('amount').touched
+                "
+              >
+                <small class="text-danger pb-2"
+                  >Input the amount correctly</small
+                >
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"
+                    ><i class="icon-user"></i
+                  ></span>
+                </div>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="securityCode"
+                  placeholder="CVV"
+                  required
+                  aria-describedby="CVV"
+                  [ngClass]="{
+                    'is-invalid':
+                      paymentForm.get('securityCode').touched &&
+                      paymentForm.get('securityCode').dirty &&
+                      !paymentForm.get('securityCode').valid
+                  }"
+                  securityCode
+                />
+              </div>
+              <div
+                class="text-center"
+                *ngIf="
+                  paymentForm.get('securityCode').invalid &&
+                  paymentForm.get('securityCode').touched
+                "
+              >
+                <small class="text-danger pb-2"
+                  >Input the security code correctly</small
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex col-md-12">
+          <div class="form-group text-value col-md-6">
+            <select
+              class="form-control"
+              formControlName="expirationYear"
+              [ngClass]="{
+                'is-invalid':
+                  (paymentForm.get('expirationYear').touched ||
+                    paymentForm.get('expirationYear').dirty) &&
+                  !paymentForm.get('expirationYear').valid
+              }"
+            >
+              <option value="">---Select Year---</option>
+              <option *ngFor="let year of getYear(5)" [value]="year">
+                {{ year }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group text-value col-md-6">
+            <select
+              class="form-control"
+              formControlName="expirationMonth"
+              id="expiryMonth"
+              [ngClass]="{
+                'is-invalid':
+                  (paymentForm.get('expirationMonth').touched ||
+                    paymentForm.get('expirationMonth').dirty) &&
+                  !paymentForm.get('expirationMonth').valid
+              }"
+            >
+              <option value="">---Select Month---</option>
+              <option *ngFor="let month of getMonths()" [value]="month.value">
+                {{ month.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div
+          *ngIf="
+            (paymentForm.get('expirationMonth').valid &&
+              (paymentForm.get('expirationMonth').dirty ||
+                paymentForm.get('expirationMonth').touched)) ||
+            (!paymentForm.get('expirationMonth').valid &&
+              (paymentForm.get('expirationMonth').dirty ||
+                paymentForm.get('expirationMonth').touched))
+          "
+          class="invalid-feedback"
+        >
+          <div
+            *ngIf="
+              paymentForm.get('expirationMonth').errors ||
+              paymentForm.get('expirationMonth').errors
+            "
+            class="alert alert-danger"
+          >
+            Invalid expiration date
+          </div>
+        </div>
+        <div class="row">
+          <div
+            class="text-center my-2"
+            [ngClass]="successful ? 'text-sucess' : 'text-danger'"
+          >
+            <strong>{{ message }}</strong>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 my-4">
+            <button
+              class="btn btn-success btn-block"
+              type="button"
+              disabled
+              *ngIf="loading"
+            >
+              <span
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              Loading...
+            </button>
+            <button
+              type="submit"
+              class="btn btn-success btn-block"
+              data-toggle="tooltip"
+              [title]="paymentForm.valid ? '' : 'Form not valid'"
+              [disabled]="!paymentForm.valid"
+              *ngIf="!loading"
+            >
+              Pay Now
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
