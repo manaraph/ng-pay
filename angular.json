@@ -123,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "ng-pay"
+    }
+  },
+  "defaultProject": "ng-pay",
+  "cli": {
+    "analytics": false
+  }
 }

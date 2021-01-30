@@ -5,4 +5,3 @@ export interface CreditCardState {
   securityCode?: string;
   amount: number;
 }
-
