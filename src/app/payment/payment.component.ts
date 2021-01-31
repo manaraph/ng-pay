@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Store } from '@ngrx/store';
 import { PaymentService } from '../services/payment.service';
 import { CreditCard } from '../models/credit-card.model';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-payment',
@@ -11,6 +12,8 @@ import { Subject } from 'rxjs';
 })
 export class PaymentComponent {
   unsubscribe$ = new Subject();
+  paymentDetails$: Observable<CreditCard>;
+
   paymentForm: FormGroup;
   successful = false;
   loading = false;
@@ -20,8 +23,11 @@ export class PaymentComponent {
 
   constructor(
     private form: FormBuilder,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
+    private store: Store<{ count: number }>
   ) {
+    // this.paymentDetails$ = store.select('count');
+
     this.paymentForm = this.form.group({
       amount: [
         '',
@@ -115,17 +121,8 @@ export class PaymentComponent {
     };
 
     setTimeout(() => {
-      this.paymentService.makePayment(paymentFormData).subscribe(
-        (response) => {
-          console.log(response);
-          this.loading = false;
-        },
-        (err) => {
-          console.log(err);
-          this.loading = false;
-        }
-      );
-    }, 2000);
+      this.paymentService.initiatePayment(paymentFormData);
+    }, 1000);
   }
 
   ngOnDestroy() {
